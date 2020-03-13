@@ -37,7 +37,7 @@ public class tameshiyoMeDownloader {
 	/**
 	 * 初期ページ.
 	 */
-	private static final int INITIAL_PAGE = 365;
+	private static final int INITIAL_PAGE = 375;
 
 	/**
 	 * main.
@@ -99,29 +99,52 @@ public class tameshiyoMeDownloader {
 					int tempPage = page;
 					try {
 						// 偶数ページ処理
-						String selector = String.format("div.page_pnl[data-page-prefix='%d'] img.page_img",
+						String selector = String.format(
+								"div.page_frame.front_side_pnl div.page_pnl[data-page-prefix='%d'] img.page_img",
 								((tempPage / 2) % 2 * 2));
 						WebElement webElement = webDriver.findElement(By.cssSelector(selector));
 						String src = webElement.getAttribute("src");
 						processed |= save(saveDirectory, src, page - 1);
 					} catch (Exception e) {
-						e.printStackTrace();
+						// 一部セレクターが反転している場合の対策
+						try {
+							// 偶数ページ処理
+							String selector = String.format(
+									"div.page_frame.front_side_pnl div.page_pnl[data-page-prefix='%d'] img.page_img",
+									(((tempPage - 2) / 2) % 2 * 2));
+							WebElement webElement = webDriver.findElement(By.cssSelector(selector));
+							String src = webElement.getAttribute("src");
+							processed |= save(saveDirectory, src, page - 1);
+						} catch (Exception e2) {
+							e2.printStackTrace();
+						}
 					}
 					try {
 						// 奇数ページ処理
-						String selector = String.format("div.page_pnl[data-page-prefix='%d'] img.page_img",
+						String selector = String.format(
+								"div.page_frame.front_side_pnl div.page_pnl[data-page-prefix='%d'] img.page_img",
 								((tempPage / 2) % 2 * 2 + 1));
 						WebElement webElement = webDriver.findElement(By.cssSelector(selector));
 						String src = webElement.getAttribute("src");
 						processed |= save(saveDirectory, src, page);
 					} catch (Exception e) {
-						e.printStackTrace();
+						// 一部セレクターが反転している場合の対策
+						try {
+							// 奇数ページ処理
+							String selector = String.format(
+									"div.page_frame.front_side_pnl div.page_pnl[data-page-prefix='%d'] img.page_img",
+									(((tempPage - 2) / 2) % 2 * 2 + 1));
+							WebElement webElement = webDriver.findElement(By.cssSelector(selector));
+							String src = webElement.getAttribute("src");
+							processed |= save(saveDirectory, src, page);
+						} catch (Exception e2) {
+							e2.printStackTrace();
+						}
 					}
 					if (processed) {
 						break;
 					} else {
-						// 一部ページ番号が反転して正しく取得できない場合、待機することで直るか確認
-						Thread.sleep(Duration.ofSeconds(30 * loopCount).toMillis());
+						// リロード
 						webDriver.navigate().refresh();
 						SeleniumHelper.waitForBrowserToLoadCompletely(webDriver);
 					}
