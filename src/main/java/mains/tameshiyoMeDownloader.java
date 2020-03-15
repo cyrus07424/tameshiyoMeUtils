@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Base64;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.By;
@@ -96,51 +97,17 @@ public class tameshiyoMeDownloader {
 				while (loopCount < Configurations.MAX_LOOP_COUNT) {
 					loopCount++;
 					boolean processed = false;
-					int tempPage = page;
-					try {
-						// 偶数ページ処理
-						String selector = String.format(
-								"div.page_frame.front_side_pnl div.page_pnl[data-page-prefix='%d'] img.page_img",
-								((tempPage / 2) % 2 * 2));
-						WebElement webElement = webDriver.findElement(By.cssSelector(selector));
-						String src = webElement.getAttribute("src");
-						processed |= save(saveDirectory, src, page - 1);
-					} catch (Exception e) {
-						// 一部セレクターが反転している場合の対策
-						try {
-							// 偶数ページ処理
-							String selector = String.format(
-									"div.page_frame.front_side_pnl div.page_pnl[data-page-prefix='%d'] img.page_img",
-									(((tempPage - 2) / 2) % 2 * 2));
-							WebElement webElement = webDriver.findElement(By.cssSelector(selector));
-							String src = webElement.getAttribute("src");
-							processed |= save(saveDirectory, src, page - 1);
-						} catch (Exception e2) {
-							e2.printStackTrace();
-						}
+
+					// 画像一覧を取得
+					List<WebElement> pageImgList = webDriver
+							.findElements(By.cssSelector("div.page_frame.front_side_pnl div.page_pnl img.page_img"));
+
+					// 全ての画像に対して実行
+					for (int i = 0; i < pageImgList.size(); i++) {
+						String src = pageImgList.get(i).getAttribute("src");
+						processed |= save(saveDirectory, src, page - 1 + i);
 					}
-					try {
-						// 奇数ページ処理
-						String selector = String.format(
-								"div.page_frame.front_side_pnl div.page_pnl[data-page-prefix='%d'] img.page_img",
-								((tempPage / 2) % 2 * 2 + 1));
-						WebElement webElement = webDriver.findElement(By.cssSelector(selector));
-						String src = webElement.getAttribute("src");
-						processed |= save(saveDirectory, src, page);
-					} catch (Exception e) {
-						// 一部セレクターが反転している場合の対策
-						try {
-							// 奇数ページ処理
-							String selector = String.format(
-									"div.page_frame.front_side_pnl div.page_pnl[data-page-prefix='%d'] img.page_img",
-									(((tempPage - 2) / 2) % 2 * 2 + 1));
-							WebElement webElement = webDriver.findElement(By.cssSelector(selector));
-							String src = webElement.getAttribute("src");
-							processed |= save(saveDirectory, src, page);
-						} catch (Exception e2) {
-							e2.printStackTrace();
-						}
-					}
+
 					if (processed) {
 						break;
 					} else {
