@@ -7,7 +7,7 @@ import java.io.File;
  *
  * @author cyrus
  */
-public class tameshiyomiBatchDownloader extends tameshiyoMeDownloader {
+public class TameshiyomiBatchDownloader extends TameshiyoMeDownloader {
 
 	/**
 	 * 使用するベースURL.

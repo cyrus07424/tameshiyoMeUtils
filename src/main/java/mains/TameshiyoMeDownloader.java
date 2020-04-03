@@ -23,7 +23,7 @@ import utils.SeleniumHelper;
  *
  * @author cyrus
  */
-public class tameshiyoMeDownloader {
+public class TameshiyoMeDownloader {
 
 	/**
 	 * 使用するURL.
