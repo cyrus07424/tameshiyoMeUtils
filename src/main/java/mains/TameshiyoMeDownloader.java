@@ -33,7 +33,7 @@ public class TameshiyoMeDownloader {
 	/**
 	 * 保存先ディレクトリ.
 	 */
-	private static final File SAVE_DIRECTORY = new File("download/9784295002560");
+	private static final File SAVE_DIRECTORY = new File("downloads/9784295002560");
 
 	/**
 	 * 初期ページ.

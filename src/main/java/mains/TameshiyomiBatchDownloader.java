@@ -26,7 +26,7 @@ public class TameshiyomiBatchDownloader extends TameshiyoMeDownloader {
 	/**
 	 * 保存先ベースディレクトリ.
 	 */
-	private static final File SAVE_BASE_DIRECTORY = new File("download/");
+	private static final File SAVE_BASE_DIRECTORY = new File("downloads/");
 
 	/**
 	 * main.

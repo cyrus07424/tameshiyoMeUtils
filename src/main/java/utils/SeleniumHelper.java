@@ -30,7 +30,9 @@ public class SeleniumHelper {
 
 		// ChromeOptions
 		ChromeOptions chromeOptions = new ChromeOptions();
-		chromeOptions.setHeadless(Configurations.USE_HEADLESS_MODE);
+		if (Configurations.USE_HEADLESS_MODE) {
+			chromeOptions.addArguments("--headless=new");
+		}
 		chromeOptions.addArguments("--disable-dev-shm-usage");
 		chromeOptions.addArguments("--no-sandbox");
 
